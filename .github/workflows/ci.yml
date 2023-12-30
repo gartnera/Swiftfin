@@ -55,8 +55,16 @@ jobs:
           retry_on: error
           timeout_minutes: 60
           command: |
-            xcodebuild build -project "Swiftfin.xcodeproj" \
+            xcodebuild archive -project "Swiftfin.xcodeproj" \
             -scheme "${{ matrix.scheme }}" \
             -clonedSourcePackagesDirPath PackageCache \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/switftin.xcarchive \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      - run: ls -la $RUNNER_TEMP
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.scheme }}
+          path: "${{ runner.temp }}/switftin.xcarchive"
+          if-no-files-found: error
       
